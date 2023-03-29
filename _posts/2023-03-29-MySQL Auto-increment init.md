@@ -31,6 +31,7 @@ ALTER TABLE shop_table AUTO_INCREMENT = 1050;
 N/A
 
 <h3 data-toc-skip>해결</h3>
+shop_seq column 있는 테이블 업데이트 처리
 ```sql
 select * from shop_table order by shop_seq desc;
 update shop_table set shop_seq = shop_seq - 999000  where shop_seq > 999000 ;
