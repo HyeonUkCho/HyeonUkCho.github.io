@@ -1,6 +1,6 @@
 ---
 layout: post  
-title: MySQL Auto-increment init.  
+title: MySQL Auto-increment init  
 author: Hyeon Uk Cho  
 date: 2023-03-29 18:09:00 +09:00  
 categories: [MYSQL]  
@@ -36,3 +36,4 @@ select * from shop_table order by shop_seq desc;
 update shop_table set shop_seq = shop_seq - 999000  where shop_seq > 999000 ;
 ALTER TABLE shop_table AUTO_INCREMENT = 1050;
 ```
+
