@@ -1,6 +1,6 @@
 ---
 layout: post  
-title: MySQL Index-1  
+title: MySQL Index 1  
 author: Hyeon Uk Cho  
 date: 2023-03-30 18:09:00 +09:00  
 categories: [MYSQL]  
