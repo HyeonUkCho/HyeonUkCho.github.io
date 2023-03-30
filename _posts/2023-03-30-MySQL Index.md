@@ -7,7 +7,7 @@ categories: [MYSQL]
 tags: [index, b-tree]  
 math: true  
 mermaid: true  
-image: /assets/img/pos-header/mysql.png  
+image: /assets/img/post-header/mysql.png  
 path:   
 lqip: data:image/webp;base64,UklGRpoAAABXRUJQVlA4WAoAAAAQAAAADwAABwAAQUxQSDIAAAARL0AmbZurmr57yyIiqE8oiG0bejIYEQTgqiDA9vqnsUSI6H+oAERp2HZ65qP/VIAWAFZQOCBCAAAA8AEAnQEqEAAIAAVAfCWkAALp8sF8rgRgAP7o9FDvMCkMde9PK7euH5M1m6VWoDXf2FkP3BqV0ZYbO6NA/VFIAAAA  
 alt:
@@ -15,7 +15,7 @@ alt:
 
 
 <h3 data-toc-skip>한줄 정리</h3>
-auto-increment 초기화의 경우, 기존 데이터가 초기화하는 값보다 높은 값이 있다면 적용이 되지 않는다.
+
 
 <h3 data-toc-skip>인덱스란?</h3>
 - 책의 마지막에 있는 '찾아보기'로 비유
