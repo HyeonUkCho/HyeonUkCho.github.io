@@ -150,15 +150,14 @@ case B 인덱스는 우선 emp_no > 10144 and dept_no = d002 인 레코드를 �
 ```sql
 -- 불용어 조회
 select * from information_schema.innodb_ft_default_stopword;
-```
-```sql
+
+-- ngram index create
 create table tb_test (
-    doc_id int,
-    doc_body text,
-    primary key (doc_id),
-    fulltext key fx_docbody (doc_body) with parser ngram
+                       doc_id int,
+                       doc_body text,
+                       primary key (doc_id),
+                       fulltext key fx_docbody (doc_body) with parser ngram
 ) engine=innoDB;
-
+-- select 
 select * from tb_test where match(doc_body) against ('애플' in boolean mode);
-
 ```
