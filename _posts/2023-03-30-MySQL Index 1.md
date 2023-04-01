@@ -13,9 +13,8 @@ lqip: data:image/webp;base64,UklGRpoAAABXRUJQVlA4WAoAAAAQAAAADwAABwAAQUxQSDIAAAA
 alt:
 ---
 
-
 <h3 data-toc-skip>한줄 정리</h3>
-
+아주 중요하다...
 
 <h3 data-toc-skip>인덱스란?</h3>
 - 책의 마지막에 있는 '찾아보기'로 비유
