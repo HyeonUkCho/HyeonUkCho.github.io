@@ -83,7 +83,82 @@ __(질문) 그럼 innodb에선 데이터를 세컨더리 인덱스로 조회할 
 - 즉, 읽어야할 레코드의 건수가 전체 테이블 레코드의 20~25%를 넘어서면 인덱스를 이용하지 않고 테이블을 모두 직접 읽어서 필요한 레코드만 가려내는 방식으로 처리하는 것이 효율적이다.
 
 <h3 data-toc-skip>Index Range Scan</h3>
+1. 인덱스에서 조건을 만족하는 값이 저장된 위치를 찾는다. 인덱스 탐색  
+2. 1번에서 탐색된 위치부터 필요한 만큼 인덱스를 차례대로 쭉 읽는다. 인덱스 스캔. 인덱스 자체 정렬 특성 때문에 정렬되어 레코드를 가져온다.
+3. 2번에서 읽어 들인 인덱스 키와 레코드 주소를 이용해 레코드가 저장된 페이지를 가져오고, 최종 레코드를 읽어온다.
+4. 리프노드 -> 데이터 레코드 가져오는데 레코드 한 건 한 건 단위로 랜덤 I/O 발생.
+5. 쿼리가 필요로 하는 데이터에 따라 3번 과정은 필요하지 않을 수 있는데 이를 커버링 인덱스라고 한다.
 
+<h3 data-toc-skip>Index Full Scan</h3>
+1. 인덱스의 처음부터 끝까지 모두 읽는 방식을 인덱스 풀 스캔이라고 한다.
 
+<h3 data-toc-skip>Loose Index Scan</h3>
+1. Oracle과 같은 DBMS의 인덱스 스킵 스캔이라고 하는 기능과 작동 방식 비슷.
+2. 일반적으로 GROUP BY 또는 집합 함수 가운데 MAX() 또는 MIN() 함수에 대해 최적화를 하는 경우에 사용.
+3. 골라서 읽는 ...
 
+<h3 data-toc-skip>Index Skip Scan</h3>
+1. index가 (a,b) 컬럼으로 잡혀 있을 때, a 없이도 b 컬럼만으로도 인덱스 검색이 가능하게 해주는 기능.
+2. 커버링 인덱스의 경우에만 적용이 된다.
+3. WHERE 조건절에 조건이 없는 인덱스의 선행 컬럼의 유니크한 값의 개수가 적어야 적용 가능한 최적화.
 
+<h3 data-toc-skip>다중 컬럼 인덱스</h3>
+1. 첫번째, 두번째, 세번째 각각 선행하는 컬럼에 의존적으로 정렬되어 있다.
+2. 인덱스 내에서 각 컬럼의 위치가 중요하다.
+   
+<h3 data-toc-skip>B-Tree 인덱스의 정렬 및 스캔 방향</h3>
+1. 인덱스를 생성할 때 ASC, DESC로 설정했다고 해서 계속 생성에 설정된 것으로 읽지 않고 쿼리에 따라 옵티마이저가 실시간으로 만들어내는 실행 계획에 따라 달라진다.
+2. 인덱스 생성 시점에 오름차순, 내림차순으로 정렬이 결정되지만 쿼리가 그 인덱스를 사용하는 시점에 인덱스를 읽는 방향에 따라 오름차순 또는 내림차순 정렬 효과를 얻을 수 있다.
+3. 오름차순으로 생성된 인덱스를 정순으로 읽으면 출력되는 결과 레코드는 자동으로 오름차순으로 정렬된 결과가 되고, 역순으로 읽으면 그 결과는 내림차순으로 정렬된 상태가 되는 것이다.
+```sql
+select * from employees where first_name >= 'anneke'
+order by first_name asc limit 4;
+-- anneke 찾아서 정렬순으로 해당 인덱스를 읽으면서 4개의 레코드 조회
+select * from employees
+order by first_name desc limit 5;
+-- 인덱스 역순으로 읽으면서 처음 다섯 개의 레코드만 가져오면 된다.
+```
+4. 역순 정렬이 비교적 느리다.
+   - 페이지 잠금이 인덱스 정순 스캔에 적합한 구조
+   - 페이지 내에서 인덱스 레코드가 단방향으로만 연결된 구조
+5. 실제로 레코드들이 물리적으로 저장이 순서대로 배치되지는 않는다. (246 페이지)
+
+<h3 data-toc-skip>B-Tree 인덱스의 가용성과 효율성</h3>
+```sql
+select * from dept_emp where dept_no = 'd002' and emp_no >= 10114;
+
+-- case A : index (dept_no, emp_no)
+-- case B : index (emp_no, dept_no)
+```
+case A 인덱스는 dept_no=d002 and emp_no > 10144 인 레코드를 찾고, 그 이후에 dept_no가 d002가 아닐 때까지 인덱스를 쭉 읽기만 하면 된다. 꼭 필요한 작업만 진행  
+case B 인덱스는 우선 emp_no > 10144 and dept_no = d002 인 레코드를 찾고, 그 이후 모든 레코드에 대해 dept_no가 d002인지 비교하는 과정을 거쳐야 한다.  
+
+가용성은 249 페이지 참고
+
+<h3 data-toc-skip>R-Tree Index</h3>
+ - Skip
+
+<h3 data-toc-skip>전문 검색 인덱스 Full Text Index</h3>
+1. 어근 분석 알고리즘
+   - 불용어 처리(가치 없는 단거 모두 필터링)와 어근 분석(단어의 뿌리인 원형을 찾는 작업)의 과정을 거친다.
+   - MeCab 오픈소스 이용, 한글이나 일본어는 형태소 분석이 중요
+   - 한글은 거의 사용 X
+2. n-gram 알고리즘  
+   - 어근 분석 알고리즘의 단점을 보완하기 위한 방법으로 도입.
+   - 본문을 잘라서 무조건 몇 글자씩 잘라서 인덱싱하는 방법.
+   - 불용어는 기본적으로 영어 단어. 한글 사용할때는 괜찮다.
+```sql
+-- 불용어 조회
+select * from information_schema.innodb_ft_default_stopword;
+```
+```sql
+create table tb_test (
+    doc_id int,
+    doc_body text,
+    primary key (doc_id),
+    fulltext key fx_docbody (doc_body) with parser ngram
+) engine=innoDB;
+
+select * from tb_test where match(doc_body) against ('애플' in boolean mode);
+
+```
