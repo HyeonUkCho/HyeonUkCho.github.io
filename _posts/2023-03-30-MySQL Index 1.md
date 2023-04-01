@@ -146,6 +146,7 @@ case B 인덱스는 우선 emp_no > 10144 and dept_no = d002 인 레코드를 �
    - 어근 분석 알고리즘의 단점을 보완하기 위한 방법으로 도입.
    - 본문을 잘라서 무조건 몇 글자씩 잘라서 인덱싱하는 방법.
    - 불용어는 기본적으로 영어 단어. 한글 사용할때는 괜찮다.
+
 ```sql
 -- 불용어 조회
 select * from information_schema.innodb_ft_default_stopword;
