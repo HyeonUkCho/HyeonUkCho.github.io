@@ -24,6 +24,7 @@ auto-increment 초기화의 경우, 기존 데이터가 초기화하는 값보�
 ```sql
 ALTER TABLE shop_table AUTO_INCREMENT = 1050;
 ```
+
 <h3 data-toc-skip>원인</h3>
 기존 데이터가 초기화하는 값보다 높은 값이 있다면 적용이 되지 않는다.
 
